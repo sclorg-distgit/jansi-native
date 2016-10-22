@@ -13,7 +13,7 @@
 
 Name:             %{?scl_prefix}jansi-native
 Version:          1.4
-Release:          14%{?dist}
+Release:          15%{?dist}
 Summary:          Jansi Native implements the JNI Libraries used by the Jansi project
 Group:            Development/Libraries
 License:          ASL 2.0
@@ -25,30 +25,27 @@ Source0:          jansi-native-%{version}.tar.xz
 
 Patch0:           0001-Fixing-archiver-requires-AM_PROG_AR-in-configure.ac-.patch
 
-BuildRequires:    jpackage-utils
-BuildRequires:    java-devel
-BuildRequires:    maven-local
-BuildRequires:    maven-compiler-plugin
-BuildRequires:    maven-javadoc-plugin
-BuildRequires:    maven-surefire-plugin
-BuildRequires:    maven-surefire-report-plugin
-BuildRequires:    maven-project-info-reports-plugin
-BuildRequires:    maven-clean-plugin
-BuildRequires:    maven-plugin-bundle
-BuildRequires:    maven-plugin-jxr
-BuildRequires:    junit4
-BuildRequires:    %{?scl_prefix}hawtjni
+BuildRequires:    maven30-maven-local
+BuildRequires:    maven30-maven-compiler-plugin
+BuildRequires:    maven30-maven-javadoc-plugin
+BuildRequires:    maven30-maven-surefire-plugin
+BuildRequires:    maven30-maven-surefire-report-plugin
+BuildRequires:    maven30-maven-project-info-reports-plugin
+BuildRequires:    maven30-maven-clean-plugin
+BuildRequires:    maven30-maven-plugin-bundle
+BuildRequires:    maven30-maven-plugin-jxr
+BuildRequires:    maven30-junit
 BuildRequires:    autoconf
 BuildRequires:    automake
 BuildRequires:    libtool
 BuildRequires:    make
-BuildRequires:    fusesource-pom
-BuildRequires:    maven-surefire-provider-junit4
+BuildRequires:    maven30-fusesource-pom
+BuildRequires:    maven30-maven-resources-plugin
+BuildRequires:    maven30-felix-parent
 # We need the hawtjni maven plugin for this package to build.
 # Comes from the hawtjni SRPM.
 BuildRequires:    %{?scl_prefix}maven-hawtjni-plugin
-BuildRequires:    maven-resources-plugin
-BuildRequires:    felix-parent
+BuildRequires:    %{?scl_prefix}hawtjni
 
 %description
 Jansi is a small java library that allows you to use ANSI escape sequences
@@ -64,7 +61,7 @@ Group:            Documentation
 This package contains the API documentation for %{name}.
 
 %prep
-%{?scl:scl enable %{scl} - << "EOF"}
+%{?scl:scl enable maven30 %{scl} - << "EOF"}
 %setup -q -n %{pkg_name}-%{version}
 %patch0 -p1
 
@@ -73,12 +70,12 @@ This package contains the API documentation for %{name}.
 %{?scl:EOF}
 
 %build
-%{?scl:scl enable %{scl} - << "EOF"}
+%{?scl:scl enable maven30 %{scl} - << "EOF"}
 %mvn_build
 %{?scl:EOF}
 
 %install
-%{?scl:scl enable %{scl} - << "EOF"}
+%{?scl:scl enable maven30 %{scl} - << "EOF"}
 %mvn_install
 
 # JAR
@@ -94,6 +91,9 @@ cp -p target/%{pkg_name}-%{version}-linux%{bits}.jar $RPM_BUILD_ROOT%{_jnidir}/%
 %doc license.txt
 
 %changelog
+* Tue Jun 17 2014 Severin Gehwolf <sgehwolf@redhat.com>  - 1.4-15
+- Build using the maven30 collection.
+
 * Mon Jan 20 2014 Severin Gehwolf <sgehwolf@redhat.com>  - 1.4-14
 - Rebuild in order to fix osgi()-style provides.
 - Resolves: RHBZ#1054813
